@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Oportunidades · UTFPR Finder</title><link rel="stylesheet" th:href="@{/css/app.css}"></head>
+<body><header th:replace="~{fragments :: cabecalho}"></header>
+<main class="container">
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow" th:text="${usuario.papel == 'ESTUDANTE'} ? 'Conexões do seu campus' : 'Universidade e mercado'">Universidade e mercado</p>
+      <h1 th:if="${usuario.papel == 'ESTUDANTE'}">O próximo passo,<br><span>perto de você.</span></h1>
+      <h1 th:unless="${usuario.papel == 'ESTUDANTE'}">Talentos e oportunidades,<br><span>no mesmo lugar.</span></h1>
+      <p th:if="${usuario.papel == 'ESTUDANTE'}">Vagas, projetos e eventos aprovados exclusivamente para o seu campus.</p>
+      <p th:unless="${usuario.papel == 'ESTUDANTE'}">Publique oportunidades, encontre estudantes e acompanhe cada conexão com clareza.</p>
+    </div>
+    <div class="hero-acoes">
+      <div class="hero-numero"><strong th:text="${#lists.size(oportunidades)}">0</strong><span>oportunidades<br>nesta visão</span></div>
+      <a class="botao primario" th:if="${usuario.permissoes.contains('oportunidades:criar')}" th:href="@{/oportunidades/nova}"><svg class="icone"><use href="/icons.svg#plus"></use></svg>Nova oportunidade</a>
+    </div>
+  </section>
+
+  <div class="barra-contexto">
+    <div class="abas" th:if="${usuario.papel == 'ESTUDANTE'}">
+      <a th:classappend="${aba == 'para-mim'} ? 'ativa'" th:href="@{/(aba='para-mim')}"><svg class="icone"><use href="/icons.svg#sparkles"></use></svg>Para mim</a>
+      <a th:classappend="${aba == 'explorar'} ? 'ativa'" th:href="@{/(aba='explorar')}"><svg class="icone"><use href="/icons.svg#compass"></use></svg>Explorar meu campus</a>
+    </div>
+    <div class="abas" th:if="${usuario.permissoes.contains('oportunidades:aprovar')}">
+      <a th:classappend="${aba != 'pendentes'} ? 'ativa'" th:href="@{/}">Todas</a>
+      <a th:classappend="${aba == 'pendentes'} ? 'ativa'" th:href="@{/(aba='pendentes')}"><svg class="icone"><use href="/icons.svg#clock"></use></svg>Aguardando análise</a>
+    </div>
+    <span class="campus-atual" th:if="${usuario.papel == 'ESTUDANTE'}"><svg class="icone"><use href="/icons.svg#map-pin"></use></svg>Visibilidade limitada ao campus do seu perfil</span>
+  </div>
+
+  <form class="filtros" method="get" th:action="@{/}">
+    <input type="hidden" name="aba" th:value="${aba}">
+    <div class="campo"><svg class="icone"><use href="/icons.svg#search"></use></svg><input name="busca" th:value="${busca}" placeholder="Título, empresa, curso ou competência"></div>
+    <label th:if="${usuario.papel != 'ESTUDANTE'}"><span>Campus</span><select name="campus"><option value="">Todos os campi</option><option th:each="c : ${campi}" th:value="${c}" th:text="${c}" th:selected="${c == campus}"></option></select></label>
+    <label th:if="${usuario.papel == 'ESTUDANTE'}"><span>Escopo</span><input value="Meu campus" disabled></label>
+    <button class="botao escuro" type="submit">Filtrar</button>
+  </form>
+
+  <div class="secao-titulo"><div><p class="eyebrow" th:text="${aba == 'pendentes'} ? 'Curadoria' : 'Oportunidades'">Oportunidades</p><h2 th:text="${aba == 'pendentes'} ? 'Aguardando sua análise' : (${aba == 'para-mim'} ? 'Mais compatíveis com você' : 'Descubra possibilidades')">Descubra possibilidades</h2></div></div>
+  <section class="grade" th:if="${!oportunidades.empty}">
+    <a class="card" th:each="o : ${oportunidades}" th:href="@{/oportunidades/{id}(id=${o.id})}">
+      <div class="card-topo"><span class="tag" th:text="${o.tipo}"></span><span class="status" th:classappend="${' ' + #strings.toLowerCase(o.status)}" th:text="${o.status}"></span></div>
+      <h2 th:text="${o.titulo}"></h2><p class="responsavel" th:text="${o.responsavel}"></p>
+      <div class="metadados">
+        <span class="meta"><svg class="icone"><use href="/icons.svg#map-pin"></use></svg><span th:text="${o.campus}"></span></span>
+        <span class="meta" th:text="${o.modalidade}"></span>
+        <span class="meta" th:if="${o.prazo != null}"><svg class="icone"><use href="/icons.svg#clock"></use></svg><span th:text="${#temporals.format(o.prazo,'dd/MM/yyyy')}"></span></span>
+      </div>
+      <div class="card-rodape"><div class="compatibilidade" th:if="${o.compatibilidade != null}"><strong th:text="${o.compatibilidade} + '%'">0%</strong><span>compatível</span></div><span class="ver-mais">Ver detalhes <svg class="icone"><use href="/icons.svg#chevron"></use></svg></span></div>
+    </a>
+  </section>
+  <div class="vazio" th:if="${oportunidades.empty}"><svg class="icone"><use href="/icons.svg#briefcase"></use></svg><h2>Nenhuma oportunidade nesta visão</h2><p>Ajuste os filtros ou volte mais tarde.</p></div>
+</main></body></html>

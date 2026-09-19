@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title th:text="${oportunidade.titulo} + ' · UTFPR Finder'"></title><link rel="stylesheet" th:href="@{/css/app.css}"></head>
+<body><header th:replace="~{fragments :: cabecalho}"></header>
+<main class="container estreito"><a class="voltar" th:href="@{/}">← Todas as oportunidades</a>
+  <div class="alerta sucesso" th:if="${param.criada}">Oportunidade salva. Se enviada, agora aguarda aprovação.</div><div class="alerta sucesso" th:if="${param.atualizada}">Status atualizado.</div><div class="alerta sucesso" th:if="${sucesso}" th:text="${sucesso}"></div><div class="alerta erro" th:if="${erro}" th:text="${erro}"></div>
+  <article class="painel detalhe">
+    <div class="card-topo"><span class="tag" th:text="${oportunidade.tipo}"></span><span class="status" th:classappend="${' ' + #strings.toLowerCase(oportunidade.status)}" th:text="${oportunidade.status}"></span></div>
+    <h1 th:text="${oportunidade.titulo}"></h1><p class="responsavel" th:text="${oportunidade.responsavel}"></p>
+    <div class="metadados grande"><span class="meta"><svg class="icone"><use href="/icons.svg#map-pin"></use></svg><span th:text="${oportunidade.campus}"></span></span><span th:text="${oportunidade.modalidade}"></span><span th:if="${!oportunidade.localidade.isBlank()}" th:text="${oportunidade.localidade}"></span><span th:if="${oportunidade.prazo != null}" th:text="'Até ' + ${#temporals.format(oportunidade.prazo,'dd/MM/yyyy')}"></span></div>
+    <h3>Sobre a oportunidade</h3><p class="descricao" th:text="${oportunidade.descricao}"></p>
+    <div th:if="${!oportunidade.curso.isBlank()}"><h3>Curso desejado</h3><p th:text="${oportunidade.curso}"></p></div>
+    <div th:if="${!oportunidade.competencias.empty}"><h3>Competências</h3><div class="chips"><span class="chip" th:each="c : ${oportunidade.competencias}" th:text="${c}"></span></div></div>
+    <div class="acoes-detalhe">
+      <form th:if="${usuario.papel == 'ESTUDANTE' and oportunidade.status == 'APROVADA'}" th:action="@{/oportunidades/{id}/candidatar(id=${oportunidade.id})}" method="post"><button class="botao primario" type="submit"><svg class="icone"><use href="/icons.svg#send"></use></svg>Candidatar-me</button></form>
+      <form th:if="${usuario.permissoes.contains('oportunidades:aprovar') and oportunidade.status == 'PENDENTE'}" th:action="@{/oportunidades/{id}/status(id=${oportunidade.id})}" method="post"><input type="hidden" name="status" value="APROVADA"><button class="botao primario" type="submit"><svg class="icone"><use href="/icons.svg#check"></use></svg>Aprovar</button></form>
+      <form th:if="${usuario.permissoes.contains('oportunidades:aprovar') and oportunidade.status == 'PENDENTE'}" th:action="@{/oportunidades/{id}/status(id=${oportunidade.id})}" method="post"><input type="hidden" name="status" value="REJEITADA"><button class="botao perigo" type="submit">Rejeitar</button></form>
+      <form th:if="${usuario.permissoes.contains('oportunidades:editar') and (usuario.papel != 'EMPRESA' or oportunidade.publicadorId == usuario.id) and (oportunidade.status == 'RASCUNHO' or oportunidade.status == 'REJEITADA')}" th:action="@{/oportunidades/{id}/status(id=${oportunidade.id})}" method="post"><input type="hidden" name="status" value="PENDENTE"><button class="botao" type="submit"><svg class="icone"><use href="/icons.svg#send"></use></svg>Enviar para análise</button></form>
+      <form th:if="${usuario.permissoes.contains('oportunidades:editar') and (usuario.papel != 'EMPRESA' or oportunidade.publicadorId == usuario.id) and oportunidade.status == 'APROVADA'}" th:action="@{/oportunidades/{id}/status(id=${oportunidade.id})}" method="post"><input type="hidden" name="status" value="ENCERRADA"><button class="botao" type="submit">Encerrar oportunidade</button></form>
+    </div>
+  </article>
+</main></body></html>

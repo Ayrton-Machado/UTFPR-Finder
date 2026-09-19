@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Perfil da empresa · UTFPR Finder</title><link rel="stylesheet" th:href="@{/css/app.css}"></head>
+<body><header th:replace="~{fragments :: cabecalho}"></header>
+<main class="container estreito">
+  <div class="perfil-cabecalho"><span class="perfil-icone"><svg class="icone"><use href="/icons.svg#building"></use></svg></span><div><h1>Perfil da empresa</h1><p class="muted">Defina seu contexto para publicar vagas e encontrar estudantes mais aderentes.</p></div></div>
+  <div class="alerta sucesso" th:if="${param.salvo}">Perfil atualizado.</div>
+  <form th:action="@{/perfil}" method="post" class="formulario painel">
+    <section class="form-secao"><h2>Identidade</h2><label>Nome da empresa<input name="nomeFantasia" th:value="${perfil.nomeFantasia}" maxlength="120" placeholder="Nome pelo qual a empresa é conhecida"></label><label>Sobre a empresa<textarea name="descricao" rows="5" maxlength="1600" th:text="${perfil.descricao}" placeholder="Propósito, atuação e ambiente de trabalho."></textarea></label></section>
+    <section class="form-secao"><h2>O que buscamos</h2><label>Áreas de interesse<input name="areas" th:value="${perfil.areasTexto}" placeholder="tecnologia, engenharia, gestão"><small>Separe por vírgulas.</small></label><label>Competências buscadas<input name="competenciasBuscadas" th:value="${perfil.competenciasTexto}" placeholder="java, comunicação, power bi"><small>Esses termos ajudam na busca de talentos.</small></label></section>
+    <section class="form-secao"><h2>Presença digital</h2><div class="duas-colunas"><label>Site<input name="site" type="url" th:value="${perfil.site}" placeholder="https://..."></label><label>LinkedIn<input name="linkedin" type="url" th:value="${perfil.linkedin}" placeholder="https://linkedin.com/company/..."></label></div></section>
+    <button class="botao primario" type="submit"><svg class="icone"><use href="/icons.svg#check"></use></svg>Salvar perfil</button>
+  </form>
+</main></body></html>

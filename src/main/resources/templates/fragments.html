@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org"><body>
+<header th:fragment="cabecalho" class="topo">
+  <div class="topo-conteudo">
+    <a class="marca" th:href="@{/}"><span class="marca-sinal">F</span><span>UTFPR <strong>Finder</strong></span></a>
+    <nav th:if="${usuario != null}" aria-label="Navegação principal">
+      <a th:if="${usuario.papel == 'ESTUDANTE'}" th:href="@{/(aba='para-mim')}"><svg class="icone"><use href="/icons.svg#sparkles"></use></svg><span>Para mim</span></a>
+      <a th:href="@{/}"><svg class="icone"><use href="/icons.svg#briefcase"></use></svg><span>Oportunidades</span></a>
+      <a th:if="${usuario.permissoes.contains('oportunidades:aprovar')}" th:href="@{/(aba='pendentes')}"><svg class="icone"><use href="/icons.svg#shield"></use></svg><span>Análises</span></a>
+      <a th:if="${usuario.permissoes.contains('estudantes:buscar')}" th:href="@{/talentos}"><svg class="icone"><use href="/icons.svg#graduation"></use></svg><span>Talentos</span></a>
+      <a th:if="${usuario.permissoes.contains('candidaturas:visualizar_proprias') or usuario.permissoes.contains('candidaturas:visualizar_organizacao')}" th:href="@{/candidaturas}"><svg class="icone"><use href="/icons.svg#send"></use></svg><span>Candidaturas</span></a>
+      <a th:if="${usuario.papel == 'ESTUDANTE' or usuario.papel == 'EMPRESA'}" th:href="@{/perfil}"><svg class="icone"><use href="/icons.svg#user"></use></svg><span>Meu perfil</span></a>
+      <a th:if="${usuario.permissoes.contains('usuarios:visualizar')}" th:href="@{/usuarios}"><svg class="icone"><use href="/icons.svg#users"></use></svg><span>Pessoas</span></a>
+    </nav>
+    <div class="conta" th:if="${usuario != null}">
+      <span class="avatar" th:text="${#strings.substring(usuario.nome,0,1)}">U</span>
+      <span class="conta-nome" th:text="${usuario.nome}"></span>
+      <form th:action="@{/logout}" method="post"><button class="link" type="submit" aria-label="Sair"><svg class="icone"><use href="/icons.svg#logout"></use></svg></button></form>
+    </div>
+  </div>
+</header>
+</body></html>

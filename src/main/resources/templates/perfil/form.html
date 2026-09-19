@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Meu perfil · UTFPR Finder</title><link rel="stylesheet" th:href="@{/css/app.css}"></head>
+<body><header th:replace="~{fragments :: cabecalho}"></header>
+<main class="container estreito">
+  <div class="perfil-cabecalho"><span class="perfil-icone"><svg class="icone"><use href="/icons.svg#graduation"></use></svg></span><div><h1>Meu perfil</h1><p class="muted">Seu perfil melhora as recomendações e apresenta suas experiências às empresas.</p></div></div>
+  <div class="alerta sucesso" th:if="${param.salvo}">Perfil atualizado.</div>
+  <form th:action="@{/perfil}" method="post" class="formulario painel">
+    <section class="form-secao"><h2>Formação</h2><div class="duas-colunas"><label>Campus<select name="campus"><option value="">Selecione</option><option th:each="c : ${campi}" th:value="${c}" th:text="${c}" th:selected="${c == perfil.campus}"></option></select><small>O campus define quais oportunidades você pode visualizar.</small></label><label>Curso<input name="curso" th:value="${perfil.curso}" maxlength="120" placeholder="Seu curso"></label></div><label>Período<input name="periodo" th:value="${perfil.periodo}" maxlength="30" placeholder="Ex.: 5º período"></label></section>
+    <section class="form-secao"><h2>Apresentação</h2><label>Sobre você<textarea name="resumo" rows="4" maxlength="1200" th:text="${perfil.resumo}" placeholder="Conte brevemente seus interesses e objetivos."></textarea></label><label>Atividades e experiências<textarea name="atividades" rows="5" maxlength="2000" th:text="${perfil.atividades}" placeholder="Projetos, extensão, iniciação científica, empresa júnior, voluntariado..."></textarea></label><label>Competências<input name="competencias" th:value="${perfil.competenciasTexto}" placeholder="java, comunicação, sql"><small>Separe por vírgulas.</small></label></section>
+    <section class="form-secao"><h2>Links profissionais</h2><label>Currículo online<input name="curriculoUrl" type="url" th:value="${perfil.curriculoUrl}" placeholder="https://..."></label><div class="duas-colunas"><label>LinkedIn<input name="linkedin" type="url" th:value="${perfil.linkedin}" placeholder="https://linkedin.com/in/..."></label><label>Portfólio ou GitHub<input name="portfolio" type="url" th:value="${perfil.portfolio}" placeholder="https://..."></label></div></section>
+    <button class="botao primario" type="submit"><svg class="icone"><use href="/icons.svg#check"></use></svg>Salvar perfil</button>
+  </form>
+</main></body></html>

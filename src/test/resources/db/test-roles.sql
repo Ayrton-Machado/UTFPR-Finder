@@ -1,0 +1,3 @@
+CREATE ROLE finder_app NOLOGIN NOSUPERUSER NOBYPASSRLS;
+CREATE ROLE finder_test LOGIN PASSWORD 'test-only-password' NOSUPERUSER NOBYPASSRLS;
+GRANT finder_app TO finder_test;

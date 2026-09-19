@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Entrar · UTFPR Finder</title><link rel="stylesheet" th:href="@{/css/app.css}"></head>
+<body class="login-page">
+<main class="login-shell">
+  <section class="login-apresentacao">
+    <a class="marca marca-clara" th:href="@{/}"><span class="marca-sinal">F</span><span>UTFPR <strong>Finder</strong></span></a>
+    <div class="login-chamada"><p class="eyebrow">Universidade + mercado</p><h1>Seu próximo passo começa aqui.</h1><p>Oportunidades relevantes, talentos preparados e conexões que fazem sentido.</p></div>
+    <div class="login-grafismo" aria-hidden="true"><span></span><span></span><span></span></div>
+  </section>
+  <section class="login-card">
+    <div><p class="eyebrow">Bem-vindo</p><h2>Entre na sua conta</h2><p class="muted">Acesse oportunidades e acompanhe seus próximos passos.</p></div>
+    <div class="alerta erro" th:if="${param.erro}">Login ou senha inválidos.</div>
+    <div class="alerta sucesso" th:if="${param.logout}">Sessão encerrada.</div>
+    <div class="alerta" th:if="${param.sessao}">Entre novamente para continuar.</div>
+    <form th:action="@{/login}" method="post" class="formulario">
+      <label>Login<input name="username" autocomplete="username" required autofocus placeholder="seu.login"></label>
+      <label>Senha<input name="password" type="password" autocomplete="current-password" required placeholder="••••••••"></label>
+      <button class="botao primario largo" type="submit">Continuar <span>→</span></button>
+    </form>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Talentos · UTFPR Finder</title><link rel="stylesheet" th:href="@{/css/app.css}"></head>
+<body><header th:replace="~{fragments :: cabecalho}"></header>
+<main class="container">
+  <div class="titulo-acao"><div><p class="eyebrow">Conecte-se com estudantes</p><h1>Talentos da UTFPR</h1><p class="muted">Encontre pessoas por campus, curso, competências e atividades acadêmicas.</p></div></div>
+  <form class="filtros" method="get" th:action="@{/talentos}"><div class="campo"><svg class="icone"><use href="/icons.svg#search"></use></svg><input name="busca" th:value="${busca}" placeholder="Nome, curso, atividade ou competência"></div><label><span>Campus</span><select name="campus"><option value="">Todos os campi</option><option th:each="c : ${campi}" th:value="${c}" th:text="${c}" th:selected="${c == campus}"></option></select></label><button class="botao escuro" type="submit">Buscar talentos</button></form>
+  <section class="grade-talentos" th:if="${!talentos.empty}">
+    <article class="painel talento" th:each="t : ${talentos}">
+      <div class="talento-topo"><span class="talento-avatar" th:text="${#strings.substring(t.nome,0,1)}">A</span><div><h2 th:text="${t.nome}"></h2><p><span th:text="${t.curso.isBlank() ? 'Curso não informado' : t.curso}"></span><span th:if="${!t.periodo.isBlank()}" th:text="' · ' + ${t.periodo}"></span></p></div></div>
+      <p class="campus-atual"><svg class="icone"><use href="/icons.svg#map-pin"></use></svg><span th:text="${t.campus.isBlank() ? 'Campus não informado' : t.campus}"></span></p>
+      <p class="resumo" th:if="${!t.resumo.isBlank()}" th:text="${t.resumo}"></p>
+      <div th:if="${!t.atividades.isBlank()}"><p class="eyebrow">Atividades</p><p th:text="${t.atividades}"></p></div>
+      <div class="chips" th:if="${!t.competencias.empty}"><span class="chip" th:each="c : ${t.competencias}" th:text="${c}"></span></div>
+      <div class="talento-links" th:if="${!t.curriculoUrl.isBlank() or !t.linkedin.isBlank() or !t.portfolio.isBlank()}"><a th:if="${!t.curriculoUrl.isBlank()}" th:href="${t.curriculoUrl}" target="_blank" rel="noopener"><svg class="icone"><use href="/icons.svg#file"></use></svg>Currículo</a><a th:if="${!t.linkedin.isBlank()}" th:href="${t.linkedin}" target="_blank" rel="noopener"><svg class="icone"><use href="/icons.svg#external"></use></svg>LinkedIn</a><a th:if="${!t.portfolio.isBlank()}" th:href="${t.portfolio}" target="_blank" rel="noopener"><svg class="icone"><use href="/icons.svg#external"></use></svg>Portfólio</a></div>
+    </article>
+  </section>
+  <div class="vazio" th:if="${talentos.empty}"><svg class="icone"><use href="/icons.svg#graduation"></use></svg><h2>Nenhum talento encontrado</h2><p>Tente outros termos ou remova o filtro de campus.</p></div>
+</main></body></html>
